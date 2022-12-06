@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs'
 
-const file = readFileSync('./1/data.txt', 'utf-8')
+const file = readFileSync(`${__dirname}/data.txt`, 'utf-8')
 
 const getElves = (file: string): number[][] => {
   return file
