@@ -1,14 +1,26 @@
 const file = await Deno.readTextFile('./4/data.txt')
 
-const getSectionAssignments = (file: string) => {
-  return file.trim().split('\n')
-}
+const sectionAssignments = file.trim().split('\n')
 
-const getSectionAssignmentsGroups = (assignments: string[]) => {
-  return assignments.map((assignment) => assignment.split(',').map(String))
-}
+const sectionAssignmentsGroups = sectionAssignments.map((assignment) =>
+  assignment.split(',').map(String),
+)
 
-const sectionAssignments = getSectionAssignments(file)
-const sectionAssignmentsGroups = getSectionAssignmentsGroups(sectionAssignments)
+const sectionAssignmentsIndividuals = sectionAssignmentsGroups.map((group) =>
+  group.map((assignment) => assignment.split('-').map(Number)),
+)
 
-console.log(sectionAssignmentsGroups)
+let total = 0
+
+sectionAssignmentsIndividuals.forEach((group) => {
+  const elfOne = group[0]
+  const elfTwo = group[1]
+
+  const hasFullOverlap =
+    (elfOne[0] <= elfTwo[0] && elfOne[1] >= elfTwo[1]) ||
+    (elfTwo[0] <= elfOne[0] && elfTwo[1] >= elfOne[1])
+
+  hasFullOverlap ? total++ : null
+})
+
+console.log(total)

@@ -2,11 +2,7 @@ import { priorities } from './priorities.ts'
 
 const file = await Deno.readTextFile('./3/data.txt')
 
-const getRucksacks = (file: string): string[] => {
-  return file.trim().split('\n')
-}
-
-const rucksacks = getRucksacks(file)
+const rucksacks = file.trim().split('\n')
 
 let score = 0
 

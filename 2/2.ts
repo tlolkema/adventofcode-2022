@@ -1,14 +1,5 @@
 const file = await Deno.readTextFile('./2/data.txt')
 
-const getStrategies = (file: string): string[][] => {
-  return file
-    .trim()
-    .split('\n')
-    .map((str) => str.split(' ').map(String))
-}
-
-const strategies = getStrategies(file)
-
 enum OpponentChoices {
   Rock = 'A',
   Paper = 'B',
@@ -32,6 +23,11 @@ enum ScoresRound {
   Tie = 3,
   Win = 6,
 }
+
+const strategies = file
+  .trim()
+  .split('\n')
+  .map((str) => str.split(' ').map(String))
 
 let score = 0
 
