@@ -1,7 +1,6 @@
-import { readFileSync } from 'fs'
-import { Priorities } from './priorities'
+import { priorities } from './priorities.ts'
 
-const file = readFileSync(`${__dirname}/data.txt`, 'utf-8')
+const file = await Deno.readTextFile('./3/data.txt')
 
 const getRucksacks = (file: string): string[] => {
   return file.trim().split('\n')
@@ -22,7 +21,7 @@ for (let i = 0; i < rucksacks.length; i += 3) {
     return rucksackGroup[2].includes(char)
   })
 
-  score += Priorities[commonCharacter]
+  commonCharacter != undefined ? (score += priorities[commonCharacter]) : null
 }
 
 console.log(score)

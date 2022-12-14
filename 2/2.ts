@@ -1,6 +1,4 @@
-import { readFileSync } from 'fs'
-
-const file = readFileSync(`${__dirname}/data.txt`, 'utf-8')
+const file = await Deno.readTextFile('./2/data.txt')
 
 const getStrategies = (file: string): string[][] => {
   return file

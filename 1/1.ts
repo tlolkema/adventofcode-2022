@@ -1,6 +1,4 @@
-import { readFileSync } from 'fs'
-
-const file = readFileSync(`${__dirname}/data.txt`, 'utf-8')
+const file = await Deno.readTextFile('./1/data.txt')
 
 const getElves = (file: string): number[][] => {
   return file
