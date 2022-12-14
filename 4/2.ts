@@ -15,11 +15,20 @@ let total = 0
 sectionAssignmentsIndividuals.forEach((group) => {
   const [elfOne, elfTwo] = [group[0], group[1]]
 
-  const hasFullOverlap =
-    (elfOne[0] <= elfTwo[0] && elfOne[1] >= elfTwo[1]) ||
-    (elfTwo[0] <= elfOne[0] && elfTwo[1] >= elfOne[1])
+  const sectionsElfOne: number[] = []
+  const sectionsElfTwo: number[] = []
 
-  hasFullOverlap ? total++ : null
+  for (let i = elfOne[0]; i <= elfOne[1]; i++) {
+    sectionsElfOne.push(i)
+  }
+
+  for (let i = elfTwo[0]; i <= elfTwo[1]; i++) {
+    sectionsElfTwo.push(i)
+  }
+
+  const intersection = sectionsElfOne.find((x) => sectionsElfTwo.includes(x))
+
+  intersection != undefined ? total++ : null
 })
 
 console.log(total)
