@@ -29,6 +29,7 @@ const updateCurentPath = (dir: string) => {
   }
 }
 
+// build file tree
 for (const line of filteredConsoleOutput) {
   if (line.startsWith('$ cd')) {
     const dir = line.replace('$ cd ', '')
