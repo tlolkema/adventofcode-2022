@@ -1,4 +1,4 @@
-const file = await Deno.readTextFile('./7/data_sample.txt')
+const file = await Deno.readTextFile('./7/data.txt')
 
 const consoleOutput = file.trim().split('\n')
 
@@ -6,6 +6,7 @@ const currentPath: string[] = []
 const visitedPaths: Set<string> = new Set()
 const fileTree: { [key: string]: number[] } = {}
 
+// filter out the ls and dir commands
 const filteredConsoleOutput = consoleOutput.filter(
   (line) => !line.startsWith('$ ls') && !line.startsWith('dir'),
 )
@@ -45,8 +46,32 @@ for (const line of filteredConsoleOutput) {
   }
 }
 
-for (const [path, files] of Object.entries(fileTree)) {
-  fileTree[path] = [files.reduce((a, b) => b + a)]
+// sum filesizes in each path, if there are any files else set to 0
+for (const [path, sizes] of Object.entries(fileTree)) {
+  sizes.length > 0
+    ? (fileTree[path] = [sizes.reduce((a, b) => a + b)])
+    : (fileTree[path] = [0])
 }
 
-console.log(fileTree)
+// sum paths which are subpaths of other paths
+for (const [path, sizes] of Object.entries(fileTree)) {
+  for (const [otherPath, _otherFiles] of Object.entries(fileTree)) {
+    if (path !== otherPath && path.startsWith(otherPath)) {
+      fileTree[otherPath][0] += sizes[0]
+    }
+  }
+}
+
+// find directories with size < 100000
+const directoriesUnder100000 = []
+const sizesDirectoriesUnder100000 = []
+for (const [path, sizes] of Object.entries(fileTree)) {
+  if (sizes[0] < 100000) {
+    directoriesUnder100000.push([sizes[0], path])
+    sizesDirectoriesUnder100000.push(sizes[0])
+  }
+}
+
+const totalSize = sizesDirectoriesUnder100000.reduce((a, b) => a + b)
+console.log(directoriesUnder100000)
+console.log(totalSize)

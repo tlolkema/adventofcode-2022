@@ -1,0 +1,10 @@
+$ cd /
+dir a
+100 a.txt
+$ cd a
+dir b
+100 a.txt
+$ cd b
+dir c
+$ cd c 
+100 a.txt
