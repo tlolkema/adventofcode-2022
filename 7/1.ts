@@ -1,10 +1,10 @@
-const file = await Deno.readTextFile('./7/data.txt')
+const file = await Deno.readTextFile('./7/data_sample.txt')
 
 const consoleOutput = file.trim().split('\n')
 
 const currentPath: string[] = []
 const visitedPaths: Set<string> = new Set()
-const fileTree: { [key: string]: string[] } = {}
+const fileTree: { [key: string]: number[] } = {}
 
 const filteredConsoleOutput = consoleOutput.filter(
   (line) => !line.startsWith('$ ls') && !line.startsWith('dir'),
@@ -38,7 +38,15 @@ for (const line of filteredConsoleOutput) {
     if (!alreadyVisited(fullPath)) {
       fileTree[fullPath] = []
     }
+  } else {
+    const [fileSize, _fileName] = line.split(' ')
+    const fullPath = currentPath.join('/').replace('//', '/')
+    fileTree[fullPath].push(Number(fileSize))
   }
+}
+
+for (const [path, files] of Object.entries(fileTree)) {
+  fileTree[path] = [files.reduce((a, b) => b + a)]
 }
 
 console.log(fileTree)
