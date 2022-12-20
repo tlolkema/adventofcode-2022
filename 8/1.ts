@@ -2,13 +2,36 @@ const file = await Deno.readTextFile('./8/data.txt')
 
 const rowsTrees = file.trim().split('\n')
 
-const visibleTrees = (rowTrees: number[]): number[] => {
-  const trees: number[] = []
-  let highestTree = 0
+type Direction = 'left' | 'right' | 'top' | 'bottom'
 
-  rowTrees.forEach((tree) => {
+const rowLength = rowsTrees[0].length
+const invertedIndex = (index: number) => rowLength - index - 1
+
+// returns the trees that are visible from the given direction, return as coordinates
+const visibleTrees = (
+  rowTrees: number[],
+  index: number,
+  direction: Direction,
+): string[] => {
+  const trees: string[] = []
+  let highestTree = -1
+
+  rowTrees.forEach((tree, itemIndex) => {
     if (tree > highestTree) {
-      trees.push(tree)
+      switch (direction) {
+        case 'left':
+          trees.push(`R${index}-C${itemIndex}`)
+          break
+        case 'right':
+          trees.push(`R${index}-C${invertedIndex(itemIndex)}`)
+          break
+        case 'top':
+          trees.push(`R${itemIndex}-C${index}`)
+          break
+        case 'bottom':
+          trees.push(`R${invertedIndex(itemIndex)}-C${index}`)
+      }
+
       highestTree = tree
     }
   })
@@ -16,16 +39,18 @@ const visibleTrees = (rowTrees: number[]): number[] => {
   return trees
 }
 
-let totalVisibleTrees = 0
+const visibleTreesSet = new Set<string>()
 
-for (const row of rowsTrees) {
+// find visible trees from left and right
+rowsTrees.forEach((row, index) => {
   const rowTreesLeft = row.split('').map((tree) => Number(tree))
   const rowTreesRight = [...rowTreesLeft].reverse().map((tree) => Number(tree))
-  const visibleLeft = visibleTrees(rowTreesLeft)
-  const visibleRight = visibleTrees(rowTreesRight)
+  const visibleLeft = visibleTrees(rowTreesLeft, index, 'left')
+  const visibleRight = visibleTrees(rowTreesRight, index, 'right')
 
-  totalVisibleTrees += visibleLeft.length + visibleRight.length
-}
+  visibleLeft.forEach((tree) => visibleTreesSet.add(tree))
+  visibleRight.forEach((tree) => visibleTreesSet.add(tree))
+})
 
 const treesPerColumn: number[][] = []
 
@@ -39,11 +64,13 @@ for (const row of rowsTrees) {
   }
 }
 
-for (const column of treesPerColumn) {
-  const visibleTop = visibleTrees(column)
-  const visibleBottom = visibleTrees(column.reverse())
+// find visible trees from top and bottom
+treesPerColumn.forEach((column, index) => {
+  const visibleTop = visibleTrees(column, index, 'top')
+  const visibleBottom = visibleTrees(column.reverse(), index, 'bottom')
 
-  totalVisibleTrees += visibleTop.length + visibleBottom.length
-}
+  visibleTop.forEach((tree) => visibleTreesSet.add(tree))
+  visibleBottom.forEach((tree) => visibleTreesSet.add(tree))
+})
 
-console.log(totalVisibleTrees)
+console.log(visibleTreesSet, visibleTreesSet.size)
