@@ -29,55 +29,27 @@ const strategies = file
   .split('\n')
   .map((str) => str.split(' ').map(String))
 
-let score = 0
+const scoreTable: Record<string, Record<string, number>> = {
+  [OpponentChoices.Rock]: {
+    [OurChoices.Lose]: ScoresRound.Lose + ScoresShape.Scissors,
+    [OurChoices.Tie]: ScoresRound.Tie + ScoresShape.Rock,
+    [OurChoices.Win]: ScoresRound.Win + ScoresShape.Paper,
+  },
+  [OpponentChoices.Paper]: {
+    [OurChoices.Lose]: ScoresRound.Lose + ScoresShape.Rock,
+    [OurChoices.Tie]: ScoresRound.Tie + ScoresShape.Paper,
+    [OurChoices.Win]: ScoresRound.Win + ScoresShape.Scissors,
+  },
+  [OpponentChoices.Scissors]: {
+    [OurChoices.Lose]: ScoresRound.Lose + ScoresShape.Paper,
+    [OurChoices.Tie]: ScoresRound.Tie + ScoresShape.Scissors,
+    [OurChoices.Win]: ScoresRound.Win + ScoresShape.Rock,
+  },
+}
 
-strategies.forEach((strategy) => {
+const score = strategies.reduce((acc, strategy) => {
   const [opponentChoice, ourChoice] = strategy
-
-  if (opponentChoice === OpponentChoices.Rock) {
-    if (ourChoice === OurChoices.Lose) {
-      score += ScoresRound.Lose
-      score += ScoresShape.Scissors
-    }
-    if (ourChoice === OurChoices.Tie) {
-      score += ScoresRound.Tie
-      score += ScoresShape.Rock
-    }
-    if (ourChoice === OurChoices.Win) {
-      score += ScoresRound.Win
-      score += ScoresShape.Paper
-    }
-  }
-
-  if (opponentChoice === OpponentChoices.Paper) {
-    if (ourChoice === OurChoices.Lose) {
-      score += ScoresRound.Lose
-      score += ScoresShape.Rock
-    }
-    if (ourChoice === OurChoices.Tie) {
-      score += ScoresRound.Tie
-      score += ScoresShape.Paper
-    }
-    if (ourChoice === OurChoices.Win) {
-      score += ScoresRound.Win
-      score += ScoresShape.Scissors
-    }
-  }
-
-  if (opponentChoice === OpponentChoices.Scissors) {
-    if (ourChoice === OurChoices.Lose) {
-      score += ScoresRound.Lose
-      score += ScoresShape.Paper
-    }
-    if (ourChoice === OurChoices.Tie) {
-      score += ScoresRound.Tie
-      score += ScoresShape.Scissors
-    }
-    if (ourChoice === OurChoices.Win) {
-      score += ScoresRound.Win
-      score += ScoresShape.Rock
-    }
-  }
-})
+  return acc + scoreTable[opponentChoice][ourChoice]
+}, 0)
 
 console.log(score)
